@@ -9,5 +9,11 @@ namespace FK.Core
 
         public float MinHeight => minHeight;
         public float MaxHeight => maxHeigth;
+
+        Collider col;
+
+        private void Awake() => col = GetComponent<Collider>();
+
+        public void EnableCollider(bool enable) => col.enabled = enable;
     }
 }

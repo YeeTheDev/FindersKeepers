@@ -1,7 +1,7 @@
 using FK.Core;
 using UnityEngine;
 
-namespace FK.Debug
+namespace FK.Debugging
 {
     public class Debugger : MonoBehaviour
     {
