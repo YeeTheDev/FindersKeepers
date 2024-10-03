@@ -3,12 +3,14 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Island
+  - Coin
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - Island
+  - Interactable
   - Water
   - UI
   - 

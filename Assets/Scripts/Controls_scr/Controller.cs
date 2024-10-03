@@ -2,13 +2,16 @@ using FK.Core;
 using FK.Movement;
 using UnityEngine;
 using System.Collections;
+using System;
 
 namespace FK.Controls
 {
     [RequireComponent(typeof(CameraMover))]
     public class Controller : MonoBehaviour
     {
-        [SerializeField] LayerMask islandMask;
+        public Action OnGrabCoin;
+
+        [SerializeField] LayerMask interactMask;
         [SerializeField] IslandMoveParameters currentLimits;
 
         CameraMover mover;
@@ -26,7 +29,7 @@ namespace FK.Controls
             if (!controlEnabler.ControlEnabled) { return; }
 
             ReadMovementInput();
-            CheckIfClickIsland();
+            TryInteract();
         }
 
         private void ReadMovementInput()
@@ -35,22 +38,37 @@ namespace FK.Controls
             mover.MoveVertically(Input.GetAxisRaw("Vertical"), currentLimits);
         }
 
-        private void CheckIfClickIsland()
+        private void TryInteract()
         {
             if (Input.GetMouseButtonDown(0))
             {
-                if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition),out RaycastHit hit, Mathf.Infinity, islandMask))
+                Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, Mathf.Infinity, interactMask);
+
+                if (hit.collider != null)
                 {
-                    controlEnabler.SetControlActive(false);
-
-                    currentLimits.EnableCollider(true);
-
-                    currentLimits = hit.transform.GetComponent<IslandMoveParameters>();
-                    currentLimits.EnableCollider(false);
-
-                    StartCoroutine(TransitionToIsland(hit.transform.position));
+                    if (hit.transform.CompareTag("Island")) { MoveToIsland(hit.transform); }
+                    else if (hit.transform.CompareTag("Coin")) { GrabCoin(hit.transform.gameObject); }
                 }
             }
+        }
+
+        private void MoveToIsland(Transform hit)
+        {
+            controlEnabler.SetControlActive(false);
+
+            currentLimits.EnableCollider(true);
+
+            currentLimits = hit.transform.GetComponent<IslandMoveParameters>();
+            currentLimits.EnableCollider(false);
+
+            StartCoroutine(TransitionToIsland(hit.transform.position));
+        }
+
+        private void GrabCoin(GameObject hit)
+        {
+            hit.SetActive(false);
+            OnGrabCoin?.Invoke();
+            Debug.Log("You grabbed a coin");
         }
 
         private IEnumerator TransitionToIsland(Vector3 point)
