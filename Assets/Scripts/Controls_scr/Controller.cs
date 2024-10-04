@@ -73,6 +73,8 @@ namespace FK.Controls
             hit.SetActive(false);
 
             OnGrabCoin?.Invoke();
+
+            if (coinsGrabbed >= 10) { controlEnabler.SetControlActive(false); }
         }
 
         private IEnumerator TransitionToIsland(Vector3 point)
