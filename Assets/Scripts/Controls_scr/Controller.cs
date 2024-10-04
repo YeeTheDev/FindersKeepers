@@ -13,9 +13,11 @@ namespace FK.Controls
 
         [SerializeField] LayerMask interactMask;
         [SerializeField] IslandMoveParameters currentLimits;
+        [SerializeField] AudioClip pickCoinClip;
 
         int coinsGrabbed;
         CameraMover mover;
+        AudioSource audioSource;
         ControlEnabler controlEnabler;
 
         public int CoinsGrabbed => coinsGrabbed;
@@ -23,6 +25,7 @@ namespace FK.Controls
         private void Awake()
         {
             mover = GetComponent<CameraMover>();
+            audioSource = GetComponent<AudioSource>();
 
             controlEnabler = FindObjectOfType<ControlEnabler>();
         }
@@ -71,6 +74,7 @@ namespace FK.Controls
         {
             coinsGrabbed++;
             hit.SetActive(false);
+            audioSource.PlayOneShot(pickCoinClip);
 
             OnGrabCoin?.Invoke();
 
@@ -83,6 +87,8 @@ namespace FK.Controls
 
         private IEnumerator TransitionToIsland(Vector3 point)
         {
+            point.y = currentLimits.MidHeight;
+
             yield return mover.MoveToIsland(point);
 
             controlEnabler.SetControlActive(true);
