@@ -74,7 +74,11 @@ namespace FK.Controls
 
             OnGrabCoin?.Invoke();
 
-            if (coinsGrabbed >= 10) { controlEnabler.SetControlActive(false); }
+            if (coinsGrabbed >= 10)
+            {
+                coinsGrabbed = 0;
+                controlEnabler.SetControlActive(false);
+            }
         }
 
         private IEnumerator TransitionToIsland(Vector3 point)

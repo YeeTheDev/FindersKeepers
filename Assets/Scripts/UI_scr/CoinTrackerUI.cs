@@ -16,6 +16,8 @@ namespace FK.UI
         private void OnEnable() => controller.OnGrabCoin += UpdateText;
         private void OnDisable() => controller.OnGrabCoin -= UpdateText;
 
+        public void ResetText() => text.text = "0/10";
+
         private void UpdateText()
         {
             text.text = controller.CoinsGrabbed.ToString("00") + "/10";
