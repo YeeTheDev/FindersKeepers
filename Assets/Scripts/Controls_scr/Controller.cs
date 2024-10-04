@@ -14,9 +14,12 @@ namespace FK.Controls
         [SerializeField] LayerMask interactMask;
         [SerializeField] IslandMoveParameters currentLimits;
 
+        int coinsGrabbed;
         CameraMover mover;
         ControlEnabler controlEnabler;
-        
+
+        public int CoinsGrabbed => coinsGrabbed;
+
         private void Awake()
         {
             mover = GetComponent<CameraMover>();
@@ -66,9 +69,10 @@ namespace FK.Controls
 
         private void GrabCoin(GameObject hit)
         {
+            coinsGrabbed++;
             hit.SetActive(false);
+
             OnGrabCoin?.Invoke();
-            Debug.Log("You grabbed a coin");
         }
 
         private IEnumerator TransitionToIsland(Vector3 point)
